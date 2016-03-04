@@ -8,6 +8,8 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const dgram = require('dgram');
 const udpserver = dgram.createSocket('udp4');
+const WEB_PORT = 8080;
+const UDP_PORT = 1234;
 
 app.use('/data', express.static('data'));
 app.use('/js', express.static('js'));
@@ -15,7 +17,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname+'/index.html'));
 });
 
-http.listen(8080, () => {
+http.listen(WEB_PORT, () => {
   console.log('Example app listening on port 8080!');
 });
 
@@ -59,4 +61,4 @@ udpserver.on('listening', () => {
   console.log(`server listening ${address.address}:${address.port}`);
 });
 
-udpserver.bind(1234);
+udpserver.bind(UDP_PORT);
