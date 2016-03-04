@@ -7,6 +7,11 @@ def random_bounce
   Vector[rand(range), rand(0..100.0), rand(range)]
 end
 
+def centered_bounce
+  range = 0..50.0
+  Vector[(0 <=> @pos[0]) * rand(range), rand(0..100.0), (0 <=> @pos[2]) * rand(range)]
+end
+
 @s = UDPSocket.new
 @gravity = Vector[0, -9.81, 0]
 @time_step = 0.016
@@ -22,7 +27,7 @@ def step_sim(time)
 
   if @pos[1] <= 0.0
     @pos = Vector[@pos[0], 0.0, @pos[2]]
-    @vel = random_bounce
+    @vel = centered_bounce
   end
 
   @elapsed_time += time
