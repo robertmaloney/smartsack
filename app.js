@@ -59,7 +59,7 @@ var influx_client = influx({
   host : INFLUXDB_HOST,
   port : INFLUXDB_PORT,
   protocol : 'http',
-  database: 'testsack'
+  database: 'smartsack'
 })
 var data_buffer = [];
 
