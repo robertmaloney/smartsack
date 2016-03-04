@@ -1,5 +1,6 @@
 'use strict';
 
+const influx = require('influx');
 const fs = require('fs');
 const express = require('express');
 const app = express();
@@ -10,6 +11,9 @@ const dgram = require('dgram');
 const udpserver = dgram.createSocket('udp4');
 const WEB_PORT = 8080;
 const UDP_PORT = 1234;
+const INFLUXDB_HOST = 'sackdb.d.mycased.com';
+const INFLUXDB_PORT = 9999;
+const INFLUXDB_PUSH_INTERVAL = 1000;
 
 app.use('/data', express.static('data'));
 app.use('/js', express.static('js'));
@@ -51,8 +55,21 @@ udpserver.on('error', (err) => {
   server.close();
 });
 
+var influx_client = influx({
+  host : INFLUXDB_HOST,
+  port : INFLUXDB_PORT,
+  protocol : 'http',
+  database: 'testsack'
+})
+var data_buffer = [];
+
 udpserver.on('message', (msg, rinfo) => {
-  io.emit('receiveData', JSON.parse(msg));
+  var data = JSON.parse(msg);
+  io.emit('receiveData', data);
+  data.time = new Date();
+  data_buffer.push([
+    data
+  ]);
   console.log(`UDP server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
 });
 
@@ -62,3 +79,12 @@ udpserver.on('listening', () => {
 });
 
 udpserver.bind(UDP_PORT);
+
+setInterval(() => {
+  console.log(`Post data to influxdb`)
+  if (data_buffer.length > 0) {
+    influx_client.writePoints('raw_data', data_buffer, []);
+    data_buffer = [];
+  }  
+}, INFLUXDB_PUSH_INTERVAL);
+
