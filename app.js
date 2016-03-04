@@ -1,30 +1,30 @@
 'use strict';
 
-var fs = require('fs');
-var express = require('express');
-var app = express();
-var path = require('path');
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
-var dgram = require('dgram');
-var udpserver = dgram.createSocket('udp4');
+const fs = require('fs');
+const express = require('express');
+const app = express();
+const path = require('path');
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+const dgram = require('dgram');
+const udpserver = dgram.createSocket('udp4');
 
 app.use(express.static('data'));
-app.get('/', function(req, res) {
+app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname+'/index.html'));
 });
 
-http.listen(8080, function () {
+http.listen(8080, () => {
   console.log('Example app listening on port 8080!');
 });
 
 function generateData(socket) {
   var data;
-  fs.readFile('data/accelerometer_data.json', 'utf8', function(err, file) {
+  fs.readFile('data/accelerometer_data.json', 'utf8', (err, file) => {
     data = JSON.parse(file);
     var i = 0;
     var l = data.data.length;
-    var interval = setInterval(function() {
+    var interval = setInterval(() => {
       if (i < l) {
         socket.emit('receiveData', data.data[i++]);
       } else {
@@ -34,14 +34,10 @@ function generateData(socket) {
   });
 };
 
-io.on('connection', function(socket){
+io.on('connection', (socket) => {
   console.log('User connected');
 
-  socket.on('generateData', function(){
-    // generateData(socket);
-  });
-
-  socket.on('disconnect', function(){
+  socket.on('disconnect', () => {
     console.log('User disconnected');
   });
 });
