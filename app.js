@@ -9,7 +9,8 @@ const io = require('socket.io')(http);
 const dgram = require('dgram');
 const udpserver = dgram.createSocket('udp4');
 
-app.use(express.static('data'));
+app.use('/data', express.static('data'));
+app.use('/js', express.static('js'));
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname+'/index.html'));
 });
