@@ -74,6 +74,12 @@
 			if (pos.az < z_min) z_min = pos.az;
 			if (pos.az > z_max) z_max = pos.az;
 		});
+		x_min *= graph.scale.x;
+		x_max *= graph.scale.x;
+		y_min *= graph.scale.y;
+		y_max *= graph.scale.y;
+		z_min *= graph.scale.z;
+		z_max *= graph.scale.z;
 
 		let center = new THREE.Vector3((x_max + x_min) / 2, (y_max + y_min) / 2, (z_max + z_min) / 2);
 		let diff = camera.position.sub(camCenter).add(center);
@@ -101,6 +107,11 @@
 		);
 		var line = new THREE.Line(points, mat);
 		graph.add(line);
+
+		let line_size = 500;
+		if (graph.children.length > line_size) {
+			graph.children = graph.children.slice(graph.children.length - line_size, graph.children.length)
+		}
 	};
 
 	function connect() {
