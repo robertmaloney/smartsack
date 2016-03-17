@@ -102,13 +102,17 @@
 		});
 		var points = new THREE.Geometry();
 		points.vertices.push(
-			new THREE.Vector3(last.ax, last.ay, last.az),
-			new THREE.Vector3(pos.ax, pos.ay, pos.az)
+                  // Accel Values Graph
+                  //new THREE.Vector3(last.ax, last.ay, last.az),
+                  //new THREE.Vector3(pos.ax, pos.ay, pos.az)
+                  new THREE.Vector3(33*(last.t % 3300), last.am, 0),
+                  new THREE.Vector3(33*(pos.t % 3300), pos.am, 0)
 		);
 		var line = new THREE.Line(points, mat);
 		graph.add(line);
 
-		let line_size = 500;
+		//let line_size = 500;
+		let line_size = 750;
 		if (graph.children.length > line_size) {
 			graph.children = graph.children.slice(graph.children.length - line_size, graph.children.length)
 		}
